@@ -1,46 +1,45 @@
-const mongoose = require('mongoose'); // Erase if already required
+const mongoose = require("mongoose"); // Erase if already required
 
 // Declare the Schema of the Mongo model
-var roomSchema = new mongoose.Schema({
+var roomSchema = new mongoose.Schema(
+  {
     numberRoom: {
-        type: Number,
-        required: true,
+      type: Number,
+      required: true,
     },
     max_people: {
-        type: Number,
-        required: true,
+      type: Number,
+      required: true,
     },
     roomprice: {
-        type: Number,
-        required: true,
+      type: Number,
+      required: true,
     },
     currentPeople: {
-        type: Number,
-        default: 0
+      type: Number,
+      default: 0,
     },
     thumb: {
-        filename: String,
-        path: {
-            type: String,
-            default: 'https://alibabahome.vn/wp-content/uploads/2018/12/ky-tuc-xa-nu.jpg'
-        }
-    },
-    images: [
-        {
-            filename: String,
-            path: {
-                type: String,
-                default: 'https://alibabahome.vn/wp-content/uploads/2018/12/ky-tuc-xa-nu.jpg'
-            }
-        }
-    ],
-    description: {
+      filename: String,
+      path: {
         type: String,
+        default:
+          "https://alibabahome.vn/wp-content/uploads/2018/12/ky-tuc-xa-nu.jpg",
+      },
     },
-},
-    {
-        timestamps: true,
-    });
+    images: [],
+    description: {
+      type: String,
+    },
+    devices: {
+      type: Array,
+      default: ["TV", "Điều hòa", "Tủ lạnh", "Bàn làm việc", "Bình nước nóng"],
+    },
+  },
+  {
+    timestamps: true,
+  }
+);
 
 //Export the model
-module.exports = mongoose.model('Room', roomSchema);
+module.exports = mongoose.model("Room", roomSchema);

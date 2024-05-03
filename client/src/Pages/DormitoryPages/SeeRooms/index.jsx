@@ -1,7 +1,17 @@
-import { Card, List, Image, Button, Typography, Modal } from 'antd';
-import axios from 'axios';
-import { Helmet, HelmetProvider } from 'react-helmet-async';
-import React, { useState, useEffect } from 'react';
+import {
+  Card,
+  List,
+  Image,
+  Button,
+  Typography,
+  Modal,
+  Row,
+  Col,
+  Flex,
+} from "antd";
+import axios from "axios";
+import { Helmet, HelmetProvider } from "react-helmet-async";
+import React, { useState, useEffect } from "react";
 
 const SeeRooms = () => {
   const [rooms, setRooms] = useState([]);
@@ -10,12 +20,8 @@ const SeeRooms = () => {
 
   useEffect(() => {
     const getData = async () => {
-      const result = await axios.get('http://localhost:5000/api/room');
+      const result = await axios.get("http://localhost:5000/api/room");
       setRooms(result.data.data);
-      // const sortID = result.data.data.sort(
-      //   (a, b) => a.numberRoom - b.numberRoom
-      // );
-      // setRooms(sortID);
     };
     getData();
   }, []);
@@ -29,7 +35,10 @@ const SeeRooms = () => {
     setItem(null);
   };
 
-  const auth = localStorage.getItem('auth');
+  const auth = localStorage.getItem("auth");
+
+  const handleRegisterRoom = async () => {};
+
   return (
     <>
       <HelmetProvider>
@@ -45,7 +54,9 @@ const SeeRooms = () => {
               <Card
                 className="card-room"
                 key={index}
-                title={`Phòng : 0${room.numberRoom}`}
+                title={`Phòng : ${
+                  room.numberRoom < 10 ? `0${room.numberRoom}` : room.numberRoom
+                }`}
                 cover={
                   <Image
                     preview={false}
@@ -60,15 +71,14 @@ const SeeRooms = () => {
                 }}
                 actions={[
                   <Button
-                    onClick={() => {
-                      showModal(room._id);
-                      console.log('room', room._id);
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      handleRegisterRoom();
                     }}
                   >
                     Đăng ký phòng
                   </Button>,
                 ]}
-                // actions={[<RoomRegistration item={room} />]}
                 style={{ margin: 10 }}
               >
                 <Card.Meta
@@ -91,11 +101,11 @@ const SeeRooms = () => {
       ) : (
         <h1
           style={{
-            textAlign: 'center',
-            marginTop: '20px',
-            border: '1px solid black',
+            textAlign: "center",
+            marginTop: "20px",
+            border: "1px solid black",
 
-            padding: '20px',
+            padding: "20px",
           }}
         >
           Vui lòng đăng nhập để đăng ký phòng .
@@ -115,18 +125,6 @@ const SeeRooms = () => {
     </>
   );
 };
-// const RoomRegistration = () => {
-//   const handleRegistration = () => {
-//     console.log('register');
-//   };
-//   return (
-//     <>
-//       <Button type="primary" onClick={handleRegistration}>
-//         Đăng ký phòng
-//       </Button>
-//     </>
-//   );
-// };
 
 const ModalRenderRooms = ({ _id }) => {
   const [roomRender, setRoomRender] = React.useState({});
@@ -136,15 +134,21 @@ const ModalRenderRooms = ({ _id }) => {
         `http://localhost:5000/api/room/one/${_id}`
       );
       setRoomRender(result.data.data);
-      console.log('roomRender', result);
     };
     getRoomByID();
   }, [_id]);
+
+  console.log("roomRender >>> ", roomRender);
+
   return (
     <>
       {roomRender && (
         <Card
-          title={`Phòng : 0${roomRender.numberRoom}`}
+          title={`Phòng : ${
+            roomRender.numberRoom < 10
+              ? `0${roomRender.numberRoom}`
+              : roomRender.numberRoom
+          }`}
           cover={
             <Image
               preview={false}
@@ -157,12 +161,39 @@ const ModalRenderRooms = ({ _id }) => {
           <Card.Meta
             title={
               <>
-                <Typography.Paragraph>
-                  Giá phòng : ${roomRender.roomprice}
-                </Typography.Paragraph>
-                <Typography.Paragraph>
-                  Số lượng thành viên : {roomRender.currentPeople}/4
-                </Typography.Paragraph>
+                <Row>
+                  <Col span={12}>
+                    <Typography.Paragraph>
+                      Mô tả : {roomRender.description}
+                    </Typography.Paragraph>
+                    <Flex gap={32}>
+                      <Typography.Paragraph>Thiết bị:</Typography.Paragraph>
+                      <ul style={{ fontWeight: "initial" }}>
+                        {roomRender?.devices?.map((item, index) => (
+                          <li key={`${item}-${index}`}>{item}</li>
+                        ))}
+                      </ul>
+                    </Flex>
+                  </Col>
+                  <Col span={12}>
+                    <Flex vertical align="flex-end">
+                      <Typography.Paragraph>
+                        Giá phòng : ${roomRender.roomprice}
+                      </Typography.Paragraph>
+                      <Typography.Paragraph>
+                        Số lượng thành viên : {roomRender.currentPeople}/
+                        {roomRender.max_people}
+                      </Typography.Paragraph>
+                      <Button
+                        onClick={(e) => {
+                          e.stopPropagation();
+                        }}
+                      >
+                        Đăng ký phòng
+                      </Button>
+                    </Flex>
+                  </Col>
+                </Row>
               </>
             }
           ></Card.Meta>

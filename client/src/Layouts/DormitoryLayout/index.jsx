@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect } from "react";
 import {
   AppstoreOutlined,
   MenuFoldOutlined,
@@ -6,8 +6,8 @@ import {
   FileSearchOutlined,
   HomeOutlined,
   UserOutlined,
-} from '@ant-design/icons';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+} from "@ant-design/icons";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
   faUser,
   faEdit,
@@ -15,62 +15,62 @@ import {
   faDollarSign,
   faSignOutAlt,
   faSignInAlt,
-} from '@fortawesome/free-solid-svg-icons';
-import { Button, Menu, Breadcrumb, Modal, Avatar } from 'antd';
-import { useNavigate, Outlet, Link } from 'react-router-dom';
+} from "@fortawesome/free-solid-svg-icons";
+import { Button, Menu, Breadcrumb, Modal, Avatar } from "antd";
+import { useNavigate, Outlet, Link } from "react-router-dom";
 const navigation = [
   {
-    label: 'Xem phòng',
-    key: '/dormitory/room',
-    desc: 'Xem thông tin phòng',
+    label: "Xem phòng",
+    key: "/dormitory/room",
+    desc: "Xem thông tin phòng",
     icon: <FileSearchOutlined />,
   },
   {
-    label: 'Biểu mẫu đăng ký',
+    label: "Biểu mẫu đăng ký",
     icon: <FontAwesomeIcon icon={faEnvelope} />,
-    key: 'sub1',
+    key: "sub1",
     children: [
       {
-        label: 'Đăng ký nội trú KTX',
-        key: '/dormitory/registration',
-        desc: 'Đơn đăng ký dành cho sinh viên',
+        label: "Đăng ký nội trú KTX",
+        key: "/dormitory/registration",
+        desc: "Đơn đăng ký dành cho sinh viên",
         icon: <FontAwesomeIcon icon={faEdit} />,
       },
       {
-        label: 'Thanh toán tiền phòng',
-        key: '/dormitory/test',
-        desc: 'Thanh toán tiền phòng cho sinh viên',
+        label: "Thanh toán tiền phòng",
+        key: "/dormitory/test",
+        desc: "Thanh toán tiền phòng cho sinh viên",
         icon: <FontAwesomeIcon icon={faDollarSign} />,
       },
       {
-        label: 'Thanh toán tiền điện',
-        key: '7',
-        desc: 'Thanh toán theo từng phòng',
+        label: "Thanh toán tiền điện",
+        key: "7",
+        desc: "Thanh toán theo từng phòng",
       },
       {
-        label: 'Thanh toán tiền nước',
-        key: '8',
-        desc: 'Thanh toán theo từng phòng',
+        label: "Thanh toán tiền nước",
+        key: "8",
+        desc: "Thanh toán theo từng phòng",
       },
       {
-        label: 'Thanh toán tiền cọc nội trú',
-        key: '9',
-        desc: 'Thanh toán tiền cọc nội trú cho sinh viên',
+        label: "Thanh toán tiền cọc nội trú",
+        key: "9",
+        desc: "Thanh toán tiền cọc nội trú cho sinh viên",
       },
     ],
   },
 
   {
-    label: 'Hướng dẫn',
-    desc: 'Hướng dẫn sử dụng',
+    label: "Hướng dẫn",
+    desc: "Hướng dẫn sử dụng",
     icon: <AppstoreOutlined />,
-    key: '/dormitory/instruct',
+    key: "/dormitory/instruct",
   },
 ];
 
 const DormitoryLayout = () => {
   const navigate = useNavigate();
-  const [curNav, setCurNav] = useState('');
+  const [curNav, setCurNav] = useState("");
   const handleMenuClick = ({ key }) => {
     if (key) {
       navigate(key);
@@ -89,10 +89,10 @@ const DormitoryLayout = () => {
       setScreenWidth(window.innerWidth);
     };
 
-    window.addEventListener('resize', handleResize);
+    window.addEventListener("resize", handleResize);
 
     return () => {
-      window.removeEventListener('resize', handleResize);
+      window.removeEventListener("resize", handleResize);
     };
   }, []);
   useEffect(() => {
@@ -137,7 +137,7 @@ const DormitoryLayout = () => {
         <div className="dormitoryRegistration-title">
           <div className="dormitoryRegistration-title_left">
             <h1>
-              {currentNav?.icon} {currentNav?.label}{' '}
+              {currentNav?.icon} {currentNav?.label}{" "}
             </h1>
             <p>{currentNav?.desc}</p>
           </div>
@@ -158,7 +158,7 @@ const DormitoryLayout = () => {
   };
   const [isModalOpen, setIsModalOpen] = useState(false);
 
-  const auth = localStorage.getItem('auth');
+  const auth = localStorage.getItem("auth");
   const showModal = () => {
     setIsModalOpen(!isModalOpen);
   };
@@ -166,8 +166,8 @@ const DormitoryLayout = () => {
     setIsModalOpen(false);
   };
   const handleLogout = () => {
-    localStorage.removeItem('auth');
-    navigate('/');
+    localStorage.removeItem("auth");
+    navigate("/");
   };
   return (
     <>
@@ -203,28 +203,28 @@ const DormitoryLayout = () => {
             className="dormitoryLayout-modal_avatar"
           />
           <div className="dormitoryLayout-modal_user">
-            <p style={{ fontWeight: '500', fontSize: '18px' }}>
-              Chào {JSON.parse(auth).response.name}{' '}
+            <p style={{ fontWeight: "500", fontSize: "18px" }}>
+              Chào {JSON.parse(auth).response.name}{" "}
             </p>
             <p
               style={{
-                border: '1px solid #3D3B40 ',
-                padding: '2px 4px',
-                margin: '7px 0',
-                borderRadius: '10px',
-                color: '#5BBCFF',
-                cursor: 'pointer',
-                fontSize: '15px',
+                border: "1px solid #3D3B40 ",
+                padding: "2px 4px",
+                margin: "7px 0",
+                borderRadius: "10px",
+                color: "#5BBCFF",
+                cursor: "pointer",
+                fontSize: "15px",
               }}
             >
               Quản lý tài khoản của bạn
             </p>
           </div>
           <div className="dormitoryLayout-modal_logout" onClick={handleLogout}>
-            Logout{' '}
+            Logout{" "}
             <FontAwesomeIcon
               icon={faSignOutAlt}
-              style={{ marginLeft: '6px' }}
+              style={{ marginLeft: "6px" }}
             />
           </div>
         </Modal>
@@ -238,18 +238,18 @@ const DormitoryLayout = () => {
           width={210}
           height={150}
         >
-          <p style={{ textAlign: 'center', fontSize: '15px' }}>
+          <p style={{ textAlign: "center", fontSize: "15px" }}>
             <FontAwesomeIcon
               icon={faSignInAlt}
-              style={{ marginRight: '7px' }}
+              style={{ marginRight: "7px" }}
             />
-            {''}
-            Đăng nhập{' '}
+            {""}
+            Đăng nhập{" "}
             <span
               style={{
-                textDecoration: 'underline',
-                cursor: 'pointer',
-                color: 'blue',
+                textDecoration: "underline",
+                cursor: "pointer",
+                color: "blue",
               }}
             >
               <Link to="/loginStudent">tại đây</Link>
@@ -260,7 +260,7 @@ const DormitoryLayout = () => {
 
       <div className="dormitoryLayout-header">
         <div>
-          <h1>DAU</h1>{' '}
+          <h1>DAU</h1>{" "}
           <Button
             type="primary"
             onClick={toggleCollapsed}
@@ -277,34 +277,34 @@ const DormitoryLayout = () => {
         <div>
           {auth ? (
             <Menu
-              defaultSelectedKeys={['/dormitory/room']}
-              defaultOpenKeys={['/dormitory/room']}
+              defaultSelectedKeys={["/dormitory/room"]}
+              defaultOpenKeys={["/dormitory/room"]}
               mode="inline"
               theme="dark"
               inlineCollapsed={collapsed}
               onClick={handleMenuClick}
               items={navigation}
               style={{
-                height: '98vh',
-                position: 'fixed',
-                width: '17%',
-                marginTop: '55px',
+                height: "98vh",
+                position: "fixed",
+                width: "17%",
+                marginTop: "55px",
               }}
             />
           ) : (
             <Menu
-              defaultSelectedKeys={['/dormitory/room']}
-              defaultOpenKeys={['/dormitory/room']}
+              defaultSelectedKeys={["/dormitory/room"]}
+              defaultOpenKeys={["/dormitory/room"]}
               mode="inline"
               theme="dark"
               inlineCollapsed={collapsed}
               onClick={handleMenuClick}
               items={navigation}
               style={{
-                height: '98vh',
-                position: 'fixed',
-                width: '17%',
-                marginTop: '49px',
+                height: "98vh",
+                position: "fixed",
+                width: "17%",
+                marginTop: "49px",
               }}
               disabled
             />

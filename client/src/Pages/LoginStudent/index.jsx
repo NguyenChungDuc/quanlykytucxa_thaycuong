@@ -1,19 +1,19 @@
-import React, { useEffect, useState } from 'react';
-import toast, { Toaster } from 'react-hot-toast';
-import image from '../../Assets/imageSchool.jpg';
-import logo from '../../Assets/logo.webp';
-import axios from 'axios';
-import { useNavigate } from 'react-router-dom';
-import { Modal } from 'antd';
+import React, { useEffect, useState } from "react";
+import toast, { Toaster } from "react-hot-toast";
+import image from "../../Assets/imageSchool.jpg";
+import logo from "../../Assets/logo.webp";
+import axios from "axios";
+import { useNavigate } from "react-router-dom";
+import { Modal } from "antd";
 const Login = () => {
-  const [email, setEmail] = useState('');
-  const [password, setPassword] = useState('');
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
   const navigate = useNavigate();
   const handleSubmit = async (e) => {
     try {
       e.preventDefault();
       const result = await axios.post(
-        'http://localhost:5000/api/account/login',
+        "http://localhost:5000/api/account/login",
         {
           email: email,
           password: password,
@@ -22,17 +22,17 @@ const Login = () => {
       var token = result.data;
       var tokenString = JSON.stringify(token);
       if (result.status === 200) {
-        localStorage.setItem('auth', tokenString);
-        toast.loading('Loading...');
+        localStorage.setItem("auth", tokenString);
+        toast.loading("Loading...");
         setTimeout(() => {
-          toast.success('Đăng nhập thành công !');
+          toast.success("Đăng nhập thành công !");
         }, 1000);
         setTimeout(() => {
-          navigate('/');
+          navigate("/");
         }, 1500);
       }
     } catch (err) {
-      toast.error('Email hoặc mật khẩu không đúng !');
+      toast.error("Email hoặc mật khẩu không đúng !");
     }
   };
   const [isModalOpen, setIsModalOpen] = useState(false);
@@ -49,33 +49,33 @@ const Login = () => {
         containerStyle={{}}
         toastOptions={{
           // Define default options
-          className: '',
+          className: "",
           duration: 5000,
           style: {
-            background: '#363636',
-            color: '#fff',
+            background: "#363636",
+            color: "#fff",
           },
 
           // Default options for specific types
           success: {
             duration: 3000,
             theme: {
-              primary: 'green',
-              secondary: 'black',
+              primary: "green",
+              secondary: "black",
             },
           },
           error: {
             duration: 3000,
             theme: {
-              primary: 'red',
-              secondary: 'black',
+              primary: "red",
+              secondary: "black",
             },
           },
           loading: {
             duration: 500,
             theme: {
-              primary: 'yellow',
-              secondary: 'black',
+              primary: "yellow",
+              secondary: "black",
             },
           },
         }}
@@ -91,7 +91,7 @@ const Login = () => {
             <form onSubmit={handleSubmit}>
               <input
                 type="email"
-                placeholder="Mã số sinh viên"
+                placeholder="Nhập email"
                 autoFocus
                 value={email}
                 onChange={(e) => {
@@ -123,7 +123,7 @@ const Login = () => {
           closeIcon={false}
           footer={null}
           style={{
-            marginTop: '10%',
+            marginTop: "10%",
           }}
         >
           <p>
@@ -133,7 +133,7 @@ const Login = () => {
                 <p>
                   - Sử dụng tài khoản Sinh viên (tại trang
                   <a href="https://dau.edu.vn" target="blank">
-                    {' '}
+                    {" "}
                     https://dau.edu.vn
                   </a>
                   ) để đăng nhập.

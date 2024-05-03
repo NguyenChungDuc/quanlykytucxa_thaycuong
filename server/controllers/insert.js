@@ -1,14 +1,14 @@
-const User = require('../models/user');
-const Admin = require('../models/admin');
-const Room = require('../models/room');
-const Service = require('../models/service');
-const asyncHandler = require('express-async-handler');
+const User = require("../models/user");
+const Admin = require("../models/admin");
+const Room = require("../models/room");
+const Service = require("../models/service");
+const asyncHandler = require("express-async-handler");
 const {
   userData,
   adminData,
   roomData,
   serviceData,
-} = require('../data/dataTest');
+} = require("../data/dataTest");
 
 const fnInsertUser = async (user) => {
   await User.create({
@@ -19,7 +19,7 @@ const fnInsertUser = async (user) => {
     classStudy: user.classStudy,
     email: user.email,
     phone: user.phone,
-    password: '123456',
+    password: "123456",
   });
 };
 
@@ -29,14 +29,14 @@ const insertUsers = asyncHandler(async (req, res) => {
     promises.push(fnInsertUser(user));
   }
   await Promise.all(promises);
-  return res.status(200).json('Done');
+  return res.status(200).json("Done");
 });
 
 const fnInsertAdmin = async (admin) => {
   await Admin.create({
     email: admin.email,
     name: admin.name,
-    password: '123456',
+    password: "123456",
   });
 };
 
@@ -46,7 +46,7 @@ const insertAdmins = asyncHandler(async (req, res) => {
     promises.push(fnInsertAdmin(admin));
   }
   await Promise.all(promises);
-  return res.status(200).json('Done');
+  return res.status(200).json("Done");
 });
 
 const fnInsertRoom = async (room) => {
@@ -54,6 +54,7 @@ const fnInsertRoom = async (room) => {
     numberRoom: room.numberRoom,
     max_people: room.max_people,
     roomprice: room.roomprice,
+    description: room.description,
   });
 };
 
@@ -63,8 +64,9 @@ const insertRooms = asyncHandler(async (req, res) => {
     promises.push(fnInsertRoom(room));
   }
   await Promise.all(promises);
-  return res.status(200).json('Done');
+  return res.status(200).json("Done");
 });
+
 const fnInsertService = async (service) => {
   await Service.create({
     name: service.name,
@@ -79,7 +81,7 @@ const insertServices = asyncHandler(async (req, res) => {
     promises.push(fnInsertService(service));
   }
   await Promise.all(promises);
-  return res.status(200).json('Done');
+  return res.status(200).json("Done");
 });
 
 module.exports = {
