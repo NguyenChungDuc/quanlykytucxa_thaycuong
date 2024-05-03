@@ -1,0 +1,11 @@
+###
+POST http://localhost:5000/api/insert/user/
+
+###
+POST http://localhost:5000/api/insert/admin/
+
+###
+POST http://localhost:5000/api/insert/room/
+
+###
+POST http://localhost:5000/api/insert/service/
