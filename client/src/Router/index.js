@@ -2,7 +2,7 @@ import AdminLayout from '../Layouts/AdminLayout';
 import ManagerUser from '../Pages/AdminPages/ManagerUser';
 import MangerRooms from '../Pages/AdminPages/ManagerRooms';
 import Profile from '../Pages/AdminPages/Profile';
-import AddRoomsPage from '../Pages/AdminPages/AddRooms';
+// import AddRoomsPage from '../Pages/AdminPages/AddRooms';
 import ManagerLayout from '../Layouts/ManagerLayout';
 import UserLayout from '../Layouts/UserLayout';
 import ContactPage from '../Pages/UserPages/Contact';
@@ -22,10 +22,10 @@ const InitRouter = [
     path: '/admin',
     element: <AdminLayout />,
     children: [
-      {
-        path: '/admin',
-        element: <AddRoomsPage />,
-      },
+      // {
+      //   path: '/admin',
+      //   element: <AddRoomsPage />,
+      // },
       {
         path: '/admin/manageruser',
         element: <ManagerUser />,
