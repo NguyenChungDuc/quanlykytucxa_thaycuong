@@ -1,45 +1,45 @@
-import React, { useEffect } from 'react';
-import axios from 'axios';
-import toast, { Toaster } from 'react-hot-toast';
-import { Tabs } from 'antd';
-import { useNavigate } from 'react-router-dom';
-import { Modal } from 'antd';
+import React, { useEffect } from "react";
+import axios from "axios";
+import toast, { Toaster } from "react-hot-toast";
+import { Tabs } from "antd";
+import { useNavigate } from "react-router-dom";
+import { Modal } from "antd";
 const styleForm = {
-  position: 'relative',
-  width: '50%',
-  margin: '0 auto',
-  padding: '20px',
-  borderRadius: '15px',
-  boxShadow: '0 0 10px rgba(0, 0, 0, 0.1)',
-  backgroundColor: '#fff',
-  marginTop: '20px',
-  marginBottom: '20px',
+  position: "relative",
+  width: "50%",
+  margin: "0 auto",
+  padding: "20px",
+  borderRadius: "15px",
+  boxShadow: "0 0 10px rgba(0, 0, 0, 0.1)",
+  backgroundColor: "#fff",
+  marginTop: "20px",
+  marginBottom: "20px",
 };
 
 const styleLabel = {
-  display: 'block',
+  display: "block",
 };
 const styleInput = {
-  width: '100%',
-  display: 'block',
+  width: "100%",
+  display: "block",
 
-  padding: '8px ',
-  marginBottom: '10px',
-  borderRadius: '5px',
-  outline: 'none',
-  border: '1px solid #ccc',
+  padding: "8px ",
+  marginBottom: "10px",
+  borderRadius: "5px",
+  outline: "none",
+  border: "1px solid #ccc",
 };
 const styleBtn = {
-  width: '100%',
-  padding: '8px ',
-  marginBottom: '10px',
-  borderRadius: '5px',
-  outline: 'none',
-  backgroundColor: 'blue',
-  color: 'white',
-  border: 'none',
-  cursor: 'pointer',
-  transition: 'all 0.3s',
+  width: "100%",
+  padding: "8px ",
+  marginBottom: "10px",
+  borderRadius: "5px",
+  outline: "none",
+  backgroundColor: "blue",
+  color: "white",
+  border: "none",
+  cursor: "pointer",
+  transition: "all 0.3s",
 };
 
 const ManagerUser = () => {
@@ -53,33 +53,33 @@ const ManagerUser = () => {
         containerStyle={{}}
         toastOptions={{
           // Define default options
-          className: '',
+          className: "",
           duration: 5000,
           style: {
-            background: '#363636',
-            color: '#fff',
+            background: "#363636",
+            color: "#fff",
           },
 
           // Default options for specific types
           success: {
             duration: 3000,
             theme: {
-              primary: 'green',
-              secondary: 'black',
+              primary: "green",
+              secondary: "black",
             },
           },
           error: {
             duration: 3000,
             theme: {
-              primary: 'red',
-              secondary: 'black',
+              primary: "red",
+              secondary: "black",
             },
           },
           loading: {
             duration: 500,
             theme: {
-              primary: 'yellow',
-              secondary: 'black',
+              primary: "yellow",
+              secondary: "black",
             },
           },
         }}
@@ -103,11 +103,11 @@ const AllUsers = () => {
   const navigate = useNavigate();
   useEffect(() => {
     const fetchUsers = async () => {
-      const tokenAuth = localStorage.getItem('authAdmin');
+      const tokenAuth = localStorage.getItem("authAdmin");
       const token = JSON.parse(tokenAuth);
-      console.log('token', JSON.parse(tokenAuth));
-      console.log('tokeAccess', token.accessToken);
-      const result = await axios.get('http://localhost:5000/api/user/manage', {
+      console.log("token", JSON.parse(tokenAuth));
+      console.log("tokeAccess", token.accessToken);
+      const result = await axios.get("http://localhost:5000/api/user/manage", {
         headers: {
           Authorization: `Bearer ${token.accessToken}`,
         },
@@ -123,7 +123,7 @@ const AllUsers = () => {
 
   const handleDeleteUser = async (_id, name) => {
     if (window.confirm(`Are you sure you want to delete user ${name} ?`)) {
-      const tokenAuth = localStorage.getItem('authAdmin');
+      const tokenAuth = localStorage.getItem("authAdmin");
       const token = JSON.parse(tokenAuth);
       try {
         const result = await axios.delete(
@@ -139,8 +139,8 @@ const AllUsers = () => {
           setUsers(Array.from(users).filter((x) => x._id !== _id));
         }
       } catch (error) {
-        console.error('Error:', error);
-        alert('An error occurred while deleting the user.');
+        console.error("Error:", error);
+        alert("An error occurred while deleting the user.");
       }
     } else {
       return;
@@ -158,30 +158,30 @@ const AllUsers = () => {
     setItem(_id);
   };
   const styleTable = {
-    width: '100%',
-    borderCollapse: 'collapse',
+    width: "100%",
+    borderCollapse: "collapse",
   };
 
   const styleTh = {
-    textAlign: 'center',
+    textAlign: "center",
   };
 
   const styleBtnEdit = {
-    backgroundColor: 'orange',
-    color: 'white',
-    border: 'none',
-    padding: '5px 10px',
-    borderRadius: '5px',
-    cursor: 'pointer',
-    marginRight: '10px',
+    backgroundColor: "orange",
+    color: "white",
+    border: "none",
+    padding: "5px 10px",
+    borderRadius: "5px",
+    cursor: "pointer",
+    marginRight: "10px",
   };
   const styleBtnDelete = {
-    backgroundColor: 'red',
-    color: 'white',
-    border: 'none',
-    padding: '5px 10px',
-    borderRadius: '5px',
-    cursor: 'pointer',
+    backgroundColor: "red",
+    color: "white",
+    border: "none",
+    padding: "5px 10px",
+    borderRadius: "5px",
+    cursor: "pointer",
   };
 
   return (
@@ -212,7 +212,7 @@ const AllUsers = () => {
                   style={styleBtnEdit}
                   onClick={() => {
                     handleEdit(user._id);
-                    console.log('user', user._id);
+                    console.log("user", user._id);
                   }}
                 >
                   Edit
@@ -248,7 +248,7 @@ const ModalEditUser = ({ _id }) => {
   const [userUpdate, setUserUpdate] = React.useState({});
   useEffect(() => {
     const getUserById = async () => {
-      const tokenAuth = localStorage.getItem('authAdmin');
+      const tokenAuth = localStorage.getItem("authAdmin");
       const token = JSON.parse(tokenAuth);
       const result = await axios.get(
         `http://localhost:5000/api/user/manage/one/${_id}`,
@@ -266,7 +266,7 @@ const ModalEditUser = ({ _id }) => {
   const handleSubmit = async (e) => {
     try {
       // e.preventDefault();
-      const tokenAuth = localStorage.getItem('authAdmin');
+      const tokenAuth = localStorage.getItem("authAdmin");
       const token = JSON.parse(tokenAuth);
       const result = await axios.put(
         `http://localhost:5000/api/user/manage/${_id}`,
@@ -277,10 +277,10 @@ const ModalEditUser = ({ _id }) => {
           },
         }
       );
-      console.log('result', result);
+      console.log("result", result);
       toast.success(`Edit user ${userUpdate.name} successfully!`);
     } catch (error) {
-      console.log('error', error);
+      console.log("error", error);
     }
   };
 
@@ -387,13 +387,13 @@ const ModalEditUser = ({ _id }) => {
 };
 
 const AddUser = () => {
-  const [name, setName] = React.useState('');
-  const [email, setEmail] = React.useState('');
-  const [birthday, setBirthday] = React.useState('');
-  const [classStudy, setClassStudy] = React.useState('');
-  const [phone, setPhone] = React.useState('');
-  const [address, setAddress] = React.useState('');
-  const [password, setPassword] = React.useState('');
+  const [name, setName] = React.useState("");
+  const [email, setEmail] = React.useState("");
+  const [birthday, setBirthday] = React.useState("");
+  const [classStudy, setClassStudy] = React.useState("");
+  const [phone, setPhone] = React.useState("");
+  const [address, setAddress] = React.useState("");
+  const [password, setPassword] = React.useState("");
 
   const handleSubmit = async (e) => {
     try {
@@ -407,10 +407,10 @@ const AddUser = () => {
         address: address,
         password: password,
       };
-      const tokenAuth = localStorage.getItem('auth');
+      const tokenAuth = localStorage.getItem("auth");
       const token = JSON.parse(tokenAuth);
       const result = await axios.post(
-        'http://localhost:5000/api/user/manage',
+        "http://localhost:5000/api/user/manage",
         user,
         {
           headers: {
@@ -418,10 +418,10 @@ const AddUser = () => {
           },
         }
       );
-      console.log('result', result);
-      toast.success('Add user successfully!');
+      console.log(result);
+      toast.success("Add user successfully!");
     } catch (error) {
-      console.log('error', error);
+      console.log("error", error);
     }
   };
 

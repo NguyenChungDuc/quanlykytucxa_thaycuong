@@ -12,6 +12,7 @@ import {
 import axios from "axios";
 import { Helmet, HelmetProvider } from "react-helmet-async";
 import React, { useState, useEffect } from "react";
+import toast, { Toaster } from "react-hot-toast";
 
 const SeeRooms = () => {
   const [rooms, setRooms] = useState([]);
@@ -37,10 +38,69 @@ const SeeRooms = () => {
 
   const auth = localStorage.getItem("auth");
 
-  const handleRegisterRoom = async () => {};
+  const handleRegisterRoom = async (rid) => {
+    try {
+      const tokenAuth = localStorage.getItem("auth");
+      const token = JSON.parse(tokenAuth);
+      const result = await axios.put(
+        "http://localhost:5000/api/user/room/" + rid,
+        { type: "Register for room" },
+        {
+          headers: {
+            Authorization: `Bearer ${token.accessToken}`,
+          },
+        }
+      );
+      if (result?.data?.success) {
+        toast.success(result?.data?.mes?.type);
+      }
+      // toast.success();
+    } catch (error) {
+      toast.error(error?.response?.data?.mes);
+    }
+  };
 
   return (
     <>
+      <Toaster
+        position="bottom-right"
+        reverseOrder={false}
+        gutter={8}
+        containerClassName=""
+        containerStyle={{}}
+        toastOptions={{
+          // Define default options
+          className: "",
+          duration: 5000,
+          style: {
+            background: "#363636",
+            color: "#fff",
+          },
+
+          // Default options for specific types
+          success: {
+            duration: 3000,
+            theme: {
+              primary: "green",
+              secondary: "black",
+            },
+          },
+          error: {
+            duration: 3000,
+            theme: {
+              primary: "red",
+              secondary: "black",
+            },
+          },
+          loading: {
+            duration: 500,
+            theme: {
+              primary: "yellow",
+              secondary: "black",
+            },
+          },
+        }}
+      />
       <HelmetProvider>
         <Helmet>
           <title>Room</title>
@@ -73,7 +133,7 @@ const SeeRooms = () => {
                   <Button
                     onClick={(e) => {
                       e.stopPropagation();
-                      handleRegisterRoom();
+                      handleRegisterRoom(room._id);
                     }}
                   >
                     Đăng ký phòng
@@ -128,17 +188,17 @@ const SeeRooms = () => {
 
 const ModalRenderRooms = ({ _id }) => {
   const [roomRender, setRoomRender] = React.useState({});
+  // const [servicesRoom, setServicesRoom] = React.useState({});
   useEffect(() => {
     const getRoomByID = async () => {
       const result = await axios.get(
         `http://localhost:5000/api/room/one/${_id}`
       );
       setRoomRender(result.data.data);
+      // setServicesRoom({ ...result.data.roomServices });
     };
     getRoomByID();
   }, [_id]);
-
-  console.log("roomRender >>> ", roomRender);
 
   return (
     <>
@@ -173,6 +233,16 @@ const ModalRenderRooms = ({ _id }) => {
                           <li key={`${item}-${index}`}>{item}</li>
                         ))}
                       </ul>
+                      {/* <Typography.Paragraph>Dịch vụ:</Typography.Paragraph>
+                      <ul style={{ fontWeight: "initial" }}>
+                        {services.map((item) =>
+                          item?.map((el) => (
+                            <Typography.Paragraph key={el._id}>
+                              {el?.name}
+                            </Typography.Paragraph>
+                          ))
+                        )}
+                      </ul> */}
                     </Flex>
                   </Col>
                   <Col span={12}>

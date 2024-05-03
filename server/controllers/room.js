@@ -64,8 +64,48 @@ const getRooms = asyncHandler(async (req, res) => {
   });
 });
 
+const updateRoom = asyncHandler(async (req, res) => {
+  const { _id } = req.user;
+  const { rid } = req.params;
+  const { max_people, roomprice, devices, description } = req.body;
+  if (!_id) {
+    throw new Error("Missing input");
+  }
+  const isAdmin = await Admin.findById(_id);
+  if (!isAdmin) {
+    throw new Error("Not authorized to perform this action");
+  }
+  const data = {};
+  if (max_people) data.max_people = max_people;
+  if (roomprice) data.roomprice = roomprice;
+  if (devices) data.devices = devices;
+  if (description) data.description = description;
+  if (req.files?.thumb) {
+    data.thumb = {
+      filename: req.files?.thumb[0]?.filename,
+      path: req.files?.thumb[0]?.path,
+    };
+  }
+  if (req.files?.images) {
+    data.images = req.files?.images?.map((element) => {
+      return {
+        filename: element.filename,
+        path: element.path,
+      };
+    });
+  }
+  const response = await Room.findByIdAndUpdate({ _id: rid }, data, {
+    new: true,
+  });
+  return res.status(200).json({
+    success: response ? true : false,
+    mes: response ? "Updated room" : "Somethings went wrong",
+  });
+});
+
 module.exports = {
   createRoom,
   getOneRoom,
   getRooms,
+  updateRoom,
 };
