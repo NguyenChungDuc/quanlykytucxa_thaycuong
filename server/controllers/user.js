@@ -87,7 +87,7 @@ const registerForRoom = asyncHandler(async (req, res) => {
   const room = await Room.findById(rid);
   if (!room) throw new Error(`Không tồn tại phòng có id=${rid}`);
 
-  if (room?.currentPeople.length >= room?.maxPeople)
+  if (room?.currentPeople?.length >= room?.maxPeople)
     throw new Error("Phòng đã đầy, không thể đăng ký thêm");
 
   const response = await Contact.create({

@@ -98,7 +98,7 @@ const contractApproval = asyncHandler(async (req, res) => {
     throw new Error("Phòng không tồn tại");
   }
 
-  if (room.currentPeople.length >= room.maxPeople) {
+  if (room?.currentPeople?.length >= room?.maxPeople) {
     throw new Error("Phòng đã đầy, không thể đăng ký thêm");
   }
 
