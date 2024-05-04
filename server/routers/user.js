@@ -12,6 +12,7 @@ router.put(
 );
 router.get("/manage", verifyAccessToken, ctrls.getUsers);
 router.post("/manage", verifyAccessToken, ctrls.createUser);
+router.get("/cancel/:cid", verifyAccessToken, ctrls.cancelForRoom);
 router.put("/manage/:uid", verifyAccessToken, ctrls.updateUserByAdmin);
 router.post("/room/:rid", verifyAccessToken, ctrls.registerForRoom);
 router.delete("/manage/:uid", verifyAccessToken, ctrls.deleteUser);

@@ -1,44 +1,44 @@
-import React, { useEffect, useState } from 'react';
-import { Card, List, Image, Button, Typography, Modal } from 'antd';
+import React, { useEffect, useState } from "react";
+import { Card, List, Image, Button, Typography, Modal } from "antd";
 
-import axios from 'axios';
-import { Tabs } from 'antd';
+import axios from "axios";
+import { Tabs } from "antd";
 const styleForm = {
-  position: 'relative',
-  width: '50%',
-  margin: '0 auto',
-  padding: '20px',
-  borderRadius: '15px',
-  boxShadow: '0 0 10px rgba(0, 0, 0, 0.1)',
-  backgroundColor: '#fff',
-  marginTop: '20px',
-  marginBottom: '20px',
+  position: "relative",
+  width: "50%",
+  margin: "0 auto",
+  padding: "20px",
+  borderRadius: "15px",
+  boxShadow: "0 0 10px rgba(0, 0, 0, 0.1)",
+  backgroundColor: "#fff",
+  marginTop: "20px",
+  marginBottom: "20px",
 };
 
 const styleLabel = {
-  display: 'block',
+  display: "block",
 };
 const styleInput = {
-  width: '100%',
-  display: 'block',
+  width: "100%",
+  display: "block",
 
-  padding: '8px ',
-  marginBottom: '10px',
-  borderRadius: '5px',
-  outline: 'none',
-  border: '1px solid #ccc',
+  padding: "8px ",
+  marginBottom: "10px",
+  borderRadius: "5px",
+  outline: "none",
+  border: "1px solid #ccc",
 };
 const styleBtn = {
-  width: '100%',
-  padding: '8px ',
-  marginBottom: '10px',
-  borderRadius: '5px',
-  outline: 'none',
-  backgroundColor: 'blue',
-  color: 'white',
-  border: 'none',
-  cursor: 'pointer',
-  transition: 'all 0.3s',
+  width: "100%",
+  padding: "8px ",
+  marginBottom: "10px",
+  borderRadius: "5px",
+  outline: "none",
+  backgroundColor: "blue",
+  color: "white",
+  border: "none",
+  cursor: "pointer",
+  transition: "all 0.3s",
 };
 
 const MangerRooms = () => {
@@ -70,11 +70,12 @@ const ManagerRooms = () => {
 
   useEffect(() => {
     const getData = async () => {
-      const result = await axios.get('http://localhost:5000/api/room');
+      const result = await axios.get("http://localhost:5000/api/room");
       setRooms(result.data.data);
     };
     getData();
   }, []);
+
   return (
     <>
       <List
@@ -101,7 +102,7 @@ const ManagerRooms = () => {
                 <Button
                   onClick={() => {
                     showModal(room._id);
-                    console.log('room', room._id);
+                    console.log("room", room._id);
                   }}
                 >
                   Sửa thông tin
@@ -148,7 +149,7 @@ const ModalRenderRooms = ({ _id }) => {
         `http://localhost:5000/api/room/one/${_id}`
       );
       setRoomRender(result.data.data);
-      console.log('roomRender', result);
+      console.log("roomRender", result);
     };
     getRoomByID();
   }, [_id]);
@@ -184,11 +185,11 @@ const ModalRenderRooms = ({ _id }) => {
   );
 };
 const AddRoom = () => {
-  const [name, setName] = React.useState('');
-  const [email, setEmail] = React.useState('');
-  const [birthday, setBirthday] = React.useState('');
-  const [classStudy, setClassStudy] = React.useState('');
-  const [phone, setPhone] = React.useState('');
+  const [name, setName] = React.useState("");
+  const [email, setEmail] = React.useState("");
+  const [birthday, setBirthday] = React.useState("");
+  const [classStudy, setClassStudy] = React.useState("");
+  const [phone, setPhone] = React.useState("");
 
   const handleSubmit = async (e) => {};
   return (

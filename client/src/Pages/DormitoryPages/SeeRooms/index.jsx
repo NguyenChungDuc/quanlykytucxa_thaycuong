@@ -42,9 +42,9 @@ const SeeRooms = () => {
     try {
       const tokenAuth = localStorage.getItem("auth");
       const token = JSON.parse(tokenAuth);
-      const result = await axios.put(
+      const result = await axios.post(
         "http://localhost:5000/api/user/room/" + rid,
-        { type: "Register for room" },
+        { name: "Register" },
         {
           headers: {
             Authorization: `Bearer ${token.accessToken}`,
@@ -52,9 +52,8 @@ const SeeRooms = () => {
         }
       );
       if (result?.data?.success) {
-        toast.success(result?.data?.mes?.type);
+        toast.success(result?.data?.mes);
       }
-      // toast.success();
     } catch (error) {
       toast.error(error?.response?.data?.mes);
     }
@@ -114,14 +113,12 @@ const SeeRooms = () => {
               <Card
                 className="card-room"
                 key={index}
-                title={`Phòng : ${
-                  room.numberRoom < 10 ? `0${room.numberRoom}` : room.numberRoom
-                }`}
+                title={`Phòng : ${room?.numberRoom}`}
                 cover={
                   <Image
                     preview={false}
                     className="roomsImage"
-                    src={room.thumb.path}
+                    src={room?.thumb}
                     height={270}
                     style={{ zIndex: -2 }}
                   />
@@ -145,10 +142,11 @@ const SeeRooms = () => {
                   title={
                     <>
                       <Typography.Paragraph>
-                        Giá phòng : ${room.roomprice}
+                        Giá phòng : ${room?.roomPrice}
                       </Typography.Paragraph>
                       <Typography.Paragraph>
-                        Số lượng thành viên : {room.currentPeople}/4
+                        Số lượng thành viên : {room?.currentPeople?.length}/
+                        {room?.maxPeople}
                       </Typography.Paragraph>
                     </>
                   }
@@ -180,22 +178,23 @@ const SeeRooms = () => {
         footer={false}
         width={1200}
       >
-        {item && <ModalRenderRooms _id={item} />}
+        {item && (
+          <ModalRenderRooms _id={item} onRegisterForRoom={handleRegisterRoom} />
+        )}
       </Modal>
     </>
   );
 };
 
-const ModalRenderRooms = ({ _id }) => {
+const ModalRenderRooms = ({ _id, onRegisterForRoom }) => {
   const [roomRender, setRoomRender] = React.useState({});
-  // const [servicesRoom, setServicesRoom] = React.useState({});
+
   useEffect(() => {
     const getRoomByID = async () => {
       const result = await axios.get(
         `http://localhost:5000/api/room/one/${_id}`
       );
       setRoomRender(result.data.data);
-      // setServicesRoom({ ...result.data.roomServices });
     };
     getRoomByID();
   }, [_id]);
@@ -204,18 +203,8 @@ const ModalRenderRooms = ({ _id }) => {
     <>
       {roomRender && (
         <Card
-          title={`Phòng : ${
-            roomRender.numberRoom < 10
-              ? `0${roomRender.numberRoom}`
-              : roomRender.numberRoom
-          }`}
-          cover={
-            <Image
-              preview={false}
-              src={roomRender.thumb && roomRender.thumb.path}
-              height={300}
-            />
-          }
+          title={`Phòng : ${roomRender.numberRoom}`}
+          cover={<Image preview={false} src={roomRender.thumb} height={300} />}
           style={{ margin: 10 }}
         >
           <Card.Meta
@@ -223,40 +212,42 @@ const ModalRenderRooms = ({ _id }) => {
               <>
                 <Row>
                   <Col span={12}>
-                    <Typography.Paragraph>
+                    <Typography.Paragraph style={{ whiteSpace: "wrap" }}>
                       Mô tả : {roomRender.description}
                     </Typography.Paragraph>
-                    <Flex gap={32}>
-                      <Typography.Paragraph>Thiết bị:</Typography.Paragraph>
-                      <ul style={{ fontWeight: "initial" }}>
-                        {roomRender?.devices?.map((item, index) => (
-                          <li key={`${item}-${index}`}>{item}</li>
-                        ))}
-                      </ul>
-                      {/* <Typography.Paragraph>Dịch vụ:</Typography.Paragraph>
-                      <ul style={{ fontWeight: "initial" }}>
-                        {services.map((item) =>
-                          item?.map((el) => (
-                            <Typography.Paragraph key={el._id}>
-                              {el?.name}
-                            </Typography.Paragraph>
-                          ))
-                        )}
-                      </ul> */}
+                    <Flex vertical gap={12}>
+                      <Flex gap={32} align="flex-start">
+                        <Typography.Paragraph>Thiết bị:</Typography.Paragraph>
+                        <ul style={{ fontWeight: "initial" }}>
+                          {roomRender?.devices?.map((item, index) => (
+                            <li key={`${item}-${index}`}>{item.name}</li>
+                          ))}
+                        </ul>
+                      </Flex>
+                      <Flex gap={32} align="flex-start">
+                        <Typography.Paragraph>Dịch vụ:</Typography.Paragraph>
+                        <ul style={{ fontWeight: "initial" }}>
+                          {roomRender?.services?.map((item, index) => (
+                            <li key={`${item}-${index}`}>{item.name}</li>
+                          ))}
+                        </ul>
+                      </Flex>
                     </Flex>
                   </Col>
                   <Col span={12}>
                     <Flex vertical align="flex-end">
                       <Typography.Paragraph>
-                        Giá phòng : ${roomRender.roomprice}
+                        Giá phòng : ${roomRender.roomPrice}
                       </Typography.Paragraph>
                       <Typography.Paragraph>
-                        Số lượng thành viên : {roomRender.currentPeople}/
-                        {roomRender.max_people}
+                        Số lượng thành viên :{" "}
+                        {roomRender?.currentPeople?.length}/
+                        {roomRender.maxPeople}
                       </Typography.Paragraph>
                       <Button
                         onClick={(e) => {
                           e.stopPropagation();
+                          onRegisterForRoom(roomRender?._id);
                         }}
                       >
                         Đăng ký phòng

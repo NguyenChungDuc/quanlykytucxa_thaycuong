@@ -9,14 +9,14 @@ const getCurrent = asyncHandler(async (req, res) => {
   const { _id } = req.user;
   const user = await User.findById(_id);
 
-  const room = await Room.findOne({ currentPeople: _id }).select(
-    "numberRoom roomPrice"
-  );
+  const room = await Room.findOne({ currentPeople: _id })
+    .select("numberRoom roomPrice thumb currentPeople devices services")
+    .populate("currentPeople", "name classStudy");
 
   const contact = await Contact.findOne({
     userId: _id,
     name: "Register",
-  }).select("name status");
+  }).select("name status createdAt updatedAt mes");
 
   return res.status(200).json({
     success: user ? true : false,
@@ -98,7 +98,45 @@ const registerForRoom = asyncHandler(async (req, res) => {
 
   return res.status(200).json({
     success: response ? true : false,
-    mes: response ? "Đăng ký phòng thành công" : "Đã có lỗi xảy ra",
+    mes: response
+      ? "Đăng ký phòng thành công, sớm thôi quản lý sẽ duyệt yêu cầu của bạn"
+      : "Đã có lỗi xảy ra",
+  });
+});
+
+const cancelForRoom = asyncHandler(async (req, res) => {
+  const { _id } = req.user;
+  const { cid } = req.params;
+  if (!_id || !cid) {
+    throw new Error("Thiếu dữ liệu truyền lên");
+  }
+
+  const user = await User.findById(_id);
+  if (!user) throw new Error("Tài khoản không tồn tại");
+
+  const contact = await Contact.findOne({ userId: _id });
+  if (
+    contact?.name === "Register" &&
+    contact?.status === "Success" &&
+    !contact?.mes
+  ) {
+    const response = await Contact.findByIdAndUpdate(
+      cid,
+      { mes: "Yêu cầu hủy phòng" },
+      { new: true }
+    );
+
+    return res.status(200).json({
+      success: response ? true : false,
+      mes: response ? "Vui lòng chờ quản lý xét duyệt" : "Đã có lỗi xảy ra",
+    });
+  } else if (contact?.mes) {
+    throw new Error("Yêu cầu của bạn đang chờ xử lý");
+  }
+
+  return res.status(500).json({
+    success: false,
+    mes: "Đã có lỗi xảy ra",
   });
 });
 
@@ -231,4 +269,5 @@ module.exports = {
   getUsers,
   updateUserByAdmin,
   registerForRoom,
+  cancelForRoom,
 };

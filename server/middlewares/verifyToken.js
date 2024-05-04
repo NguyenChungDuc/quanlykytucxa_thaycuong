@@ -9,7 +9,7 @@ const verifyAccessToken = asyncHandler(async (req, res, next) => {
       if (err) {
         return res.status(401).json({
           success: false,
-          mes: "Bạn không phải quản lý",
+          mes: "Lỗi token xác thực",
         });
       }
       req.user = decode;
