@@ -5,33 +5,39 @@ const { generateAccessToken } = require("../middlewares/jwt");
 
 const login = asyncHandler(async (req, res) => {
   const { email, password, role } = req.body;
-  if ((!email, !password)) {
+  if (!email || !password) {
     throw new Error("Thiếu dữ liệu truyền lên");
   }
+
+  let response;
+  let isPasswordCorrect = false;
+
   if (role === "admin") {
-    const response = await Admin.findOne({ email });
-    if (response && (await response?.isCorrectPassword(password))) {
-      const accessToken = generateAccessToken(response._id);
-      return res.status(200).json({
-        success: true,
-        response,
-        accessToken,
-      });
-    } else {
-      throw new Error("Tài khoản không tồn tại");
+    const admin = await Admin.findOne({ email });
+    if (admin) {
+      isPasswordCorrect = await admin.isCorrectPassword(password);
+      response = admin;
     }
   } else {
-    const response = await User.findOne({ email });
-    if (response && (await response?.isCorrectPassword(password))) {
-      const accessToken = generateAccessToken(response._id);
-      return res.status(200).json({
-        success: true,
-        response,
-        accessToken,
-      });
-    } else {
-      throw new Error("Tài khoản không tồn tại");
+    const user = await User.findOne({ email });
+    if (user) {
+      isPasswordCorrect = await user.isCorrectPassword(password);
+      response = user;
     }
+  }
+
+  if (isPasswordCorrect && response) {
+    response = response.toObject();
+    delete response.password;
+
+    const accessToken = generateAccessToken(response._id);
+    return res.status(200).json({
+      success: true,
+      response,
+      accessToken,
+    });
+  } else {
+    throw new Error("Tài khoản không tồn tại hoặc mật khẩu không đúng");
   }
 });
 

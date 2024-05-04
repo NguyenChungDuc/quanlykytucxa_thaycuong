@@ -19,6 +19,9 @@ const createRoom = asyncHandler(async (req, res) => {
   if (!maxPeople) throw new Error("Thiếu số người ở tối đa");
   if (!roomPrice) throw new Error("Thiếu giá phòng");
 
+  const room = await Room.findOne({ numberRoom });
+  if (room) throw new Error("Phòng đã tồn tại");
+
   if (req.files?.thumb) {
     req.body.thumb = req.files?.thumb[0]?.path;
   }
@@ -77,6 +80,14 @@ const updateRoom = asyncHandler(async (req, res) => {
   if (!_id) {
     throw new Error("Thiếu dữ liệu truyền lên");
   }
+
+  if (Object.keys(req.body).length === 0) {
+    return res.status(200).json({
+      success: true,
+      mes: "Không có gì thay đổi",
+    });
+  }
+
   const admin = await Admin.findById(_id);
   if (!admin) {
     throw new Error("Không có quyền thực hiện hành động này");

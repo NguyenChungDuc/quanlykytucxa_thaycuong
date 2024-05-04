@@ -42,7 +42,10 @@ var roomSchema = new mongoose.Schema(
     services: [
       {
         name: String,
-        price: Number,
+        price: {
+          type: Number,
+          default: 0,
+        },
         status: {
           type: Boolean,
           default: true,

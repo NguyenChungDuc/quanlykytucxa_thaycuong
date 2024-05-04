@@ -15,7 +15,7 @@ router.post(
 );
 router.get("/one/:rid", ctrls.getOneRoom);
 router.put(
-  "/manage",
+  "/manage/:rid",
   verifyAccessToken,
   uploader.fields([
     { name: "thumb", maxCount: 1 },

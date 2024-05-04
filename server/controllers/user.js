@@ -8,14 +8,21 @@ const bcrypt = require("bcrypt");
 const getCurrent = asyncHandler(async (req, res) => {
   const { _id } = req.user;
   const user = await User.findById(_id);
+
   const room = await Room.findOne({ currentPeople: _id }).select(
     "numberRoom roomPrice"
   );
 
+  const contact = await Contact.findOne({
+    userId: _id,
+    name: "Register",
+  }).select("name status");
+
   return res.status(200).json({
     success: user ? true : false,
     user: user ? user : "Tài khoản không tồn tại",
-    room: room ? room : "Chưa đăng kí phòng",
+    room: room ? room : "Chưa có phòng nào được đăng kí",
+    contact: contact ? contact : "Không có hợp đồng nào",
   });
 });
 
@@ -23,9 +30,18 @@ const updateCurrent = asyncHandler(async (req, res) => {
   const { _id } = req.user;
   const { name, birthday, address, classStudy, email, phone, password } =
     req.body;
-  if (!_id || Object.keys(req.body).length === 0) {
-    throw new Error("Không có gì thay đổi");
+
+  if (_id) {
+    throw new Error("Thiếu dữ liệu truyền lên");
   }
+
+  if (Object.keys(req.body).length === 0) {
+    return res.status(200).json({
+      success: true,
+      mes: "Không có gì thay đổi",
+    });
+  }
+
   const data = {};
   if (name) data.name = name;
   if (birthday) data.birthday = birthday;
@@ -52,28 +68,34 @@ const registerForRoom = asyncHandler(async (req, res) => {
   const { name } = req.body;
   const { rid } = req.params;
   if (!_id || !rid || !name) {
-    throw new Error("Dữ liệu bị thiếu");
+    throw new Error("Thiếu dữ liệu truyền lên");
   }
+
+  if (name !== "Register")
+    throw new Error("Tên hợp đồng truyền lên không đúng");
 
   const user = await User.findById(_id);
-  if (!user) {
-    throw new Error("Tài khoản không tồn tại");
-  }
+  if (!user) throw new Error("Tài khoản không tồn tại");
+
+  const contact = await Contact.findOne({ userId: _id });
+  if (contact?.name === "Register" && contact?.status === "Processing")
+    throw new Error("Đã có phòng được đăng ký trước đó và đang chờ xét duyệt");
 
   const already = await Room.findOne({ currentPeople: _id });
-  if (already) {
-    throw new Error("Tài khoản đã đăng ký phòng trước đó rồi");
-  }
+  if (already) throw new Error("Tài khoản đã đăng ký phòng trước đó rồi");
 
   const room = await Room.findById(rid);
-  if (!room) {
-    throw new Error(`Không tồn tại phòng có id=${rid}`);
-  }
+  if (!room) throw new Error(`Không tồn tại phòng có id=${rid}`);
+
+  if (room?.currentPeople.length >= room?.maxPeople)
+    throw new Error("Phòng đã đầy, không thể đăng ký thêm");
+
   const response = await Contact.create({
-    name: name,
+    name,
     userId: _id,
     roomId: rid,
   });
+
   return res.status(200).json({
     success: response ? true : false,
     mes: response ? "Đăng ký phòng thành công" : "Đã có lỗi xảy ra",
