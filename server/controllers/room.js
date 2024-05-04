@@ -1,8 +1,6 @@
 const Room = require("../models/room");
-const User = require("../models/user");
 const Admin = require("../models/admin");
 const asyncHandler = require("express-async-handler");
-const RoomService = require("../models/roomService");
 
 const createRoom = asyncHandler(async (req, res) => {
   const { _id } = req.user;
