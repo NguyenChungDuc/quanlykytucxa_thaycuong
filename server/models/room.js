@@ -7,34 +7,42 @@ var roomSchema = new mongoose.Schema(
       type: Number,
       required: true,
     },
-    max_people: {
+    maxPeople: {
       type: Number,
       required: true,
     },
-    roomprice: {
+    currentPeople: [
+      {
+        type: mongoose.Types.ObjectId,
+        ref: "User",
+      },
+    ],
+    roomPrice: {
       type: Number,
       required: true,
-    },
-    currentPeople: {
-      type: Number,
-      default: 0,
     },
     thumb: {
-      filename: String,
-      path: {
-        type: String,
-        default:
-          "https://alibabahome.vn/wp-content/uploads/2018/12/ky-tuc-xa-nu.jpg",
-      },
+      type: String,
+      default:
+        "https://vimiss.vn/upload/image/tin-tuc/top-5-ky-tuc-xa-truong-dai-hoc-trung-quoc-dep-xin-xo-nhat-4.jpg",
     },
     images: [],
     description: {
       type: String,
     },
-    devices: {
-      type: Array,
-      default: ["TV", "Điều hòa", "Tủ lạnh", "Bàn làm việc", "Bình nước nóng"],
-    },
+    devices: [
+      {
+        name: String,
+        status: Boolean,
+      },
+    ],
+    services: [
+      {
+        name: String,
+        status: Boolean,
+        price: Number,
+      },
+    ],
   },
   {
     timestamps: true,

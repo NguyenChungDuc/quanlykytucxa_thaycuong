@@ -7,10 +7,10 @@ const bcrypt = require("bcrypt");
 
 const getCurrent = asyncHandler(async (req, res) => {
   const { _id } = req.user;
-  const user = await User.findById(_id).populate("roomId", "numberRoom");
+  const user = await User.findById(_id);
   return res.status(200).json({
     success: user ? true : false,
-    user: user ? user : "User not found",
+    user: user ? user : "Tài khoản không tồn tại",
   });
 });
 
@@ -19,7 +19,7 @@ const updateCurrent = asyncHandler(async (req, res) => {
   const { name, birthday, address, classStudy, email, phone, password } =
     req.body;
   if (!_id || Object.keys(req.body).length === 0) {
-    throw new Error("Nothing changes");
+    throw new Error("Không có gì thay đổi");
   }
   const data = {};
   if (name) data.name = name;
@@ -33,146 +33,165 @@ const updateCurrent = asyncHandler(async (req, res) => {
     data.password = await bcrypt.hash(password, salt);
   }
   if (req.file) {
-    data.avatar = {
-      filename: req.file.filename,
-      path: req.file.path,
-    };
+    data.avatar = req.file.path;
   }
   const response = await User.findByIdAndUpdate(_id, data, { new: true });
   return res.status(200).json({
     success: response ? true : false,
-    mes: response ? response : "Something went wrong",
+    mes: response ? "Cập nhật thông tin thành công" : "Đã có lỗi xảy ra",
   });
 });
 
 const registerForRoom = asyncHandler(async (req, res) => {
   const { _id } = req.user;
-  const { type } = req.body;
+  const { name } = req.body;
   const { rid } = req.params;
-  if (!_id || !rid || !type) {
-    throw new Error("Missing input");
+  if (!_id || !rid || !name) {
+    throw new Error("Dữ liệu bị thiếu");
   }
-  const isUser = await User.findById(_id);
-  if (isUser?.roomId) {
-    throw new Error("The user has registered for the room");
+
+  const user = await User.findById(_id);
+  if (!user) {
+    throw new Error("Tài khoản không tồn tại");
   }
-  const user_userId = await Contact.findOne({ user_userId: _id });
-  if (user_userId) {
-    throw new Error("Waiting for contract approval");
+
+  const already = await Room.findOne({ currentPeople: _id });
+  if (already) {
+    throw new Error("Tài khoản đã đăng ký phòng trước đó rồi");
   }
-  const isRoom = await Room.findOne({ _id: rid });
-  if (!isRoom) {
-    throw new Error(`No such room with id=${rid}`);
+
+  const room = await Room.findById(rid);
+  if (!room) {
+    throw new Error(`Không tồn tại phòng có id=${rid}`);
   }
   const response = await Contact.create({
-    type: type,
-    user_userId: _id,
-    room_roomId: rid,
+    name: name,
+    userId: _id,
+    roomId: rid,
   });
   return res.status(200).json({
     success: response ? true : false,
-    mes: response ? response : "Something went wrong",
+    mes: response ? "Đăng ký phòng thành công" : "Đã có lỗi xảy ra",
   });
 });
 
 const createUser = asyncHandler(async (req, res) => {
   const { _id } = req.user;
-  const { userId, name, brithday, address, classStudy, email, password } =
-    req.body;
+  const { userId, name, brithday, classStudy, email, password } = req.body;
+
   if (!_id) {
-    throw new Error("Missing input");
+    throw new Error("Thiếu dữ liệu truyền lên");
   }
-  const isAdmin = await Admin.findById(_id);
-  if (!isAdmin) {
-    throw new Error("Not authorized to perform this action");
+
+  const admin = await Admin.findById(_id);
+  if (!admin) {
+    throw new Error("Bạn không có quyền thực hiện hành động này");
   }
-  if (!userId) throw new Error("Missing user id");
-  if (!name) throw new Error("Missing name");
-  if (!brithday) throw new Error("Missing birthday");
-  if (!address) throw new Error("Missing address");
-  if (!classStudy) throw new Error("Missing class");
-  if (!email) throw new Error("Missing email");
-  if (!password) throw new Error("Missing password");
+
+  if (!userId) throw new Error("Thiếu mã số sinh viên");
+  if (!name) throw new Error("Thiếu tên sinh viên");
+  if (!brithday) throw new Error("Thiếu ngày sinh");
+  if (!classStudy) throw new Error("Thiếu lớp");
+  if (!email) throw new Error("Thiếu email");
+  if (!password) throw new Error("Thiếu mật khẩu");
+
   const rs = User.findOne({ userId });
   if (!rs) {
-    throw new Error("UserId already exists");
+    throw new Error("Đã tồn tại sinh viên có mã số này");
   }
   const response = await User.create(req.body);
   return res.status(200).json({
     success: response ? true : false,
-    mes: response ? "Created user" : "Somethings went wrong",
+    mes: response ? "Tạo mới thành công" : "Đã có lỗi xảy ra",
   });
 });
 
 const deleteUser = asyncHandler(async (req, res) => {
   const { _id } = req.user;
   const { uid } = req.params;
+
   if (!_id || !uid) {
-    throw new Error("Missing input");
+    throw new Error("Thiếu thông tin truyền lên");
   }
-  const isAdmin = await Admin.findById(_id);
-  if (!isAdmin) {
-    throw new Error("Not authorized to perform this action");
+
+  const admin = await Admin.findById(_id);
+  if (!admin) {
+    throw new Error("Không có quyền thực hiện hành động này");
   }
+
   const response = await User.findByIdAndDelete(uid);
+
   return res.status(200).json({
     success: response ? true : false,
-    mes: response ? `Deleted` : "No user delete",
+    mes: response ? "Đã xóa" : "Đã có lỗi xảy ra",
   });
 });
 
 const getOneUser = asyncHandler(async (req, res) => {
   const { _id } = req.user;
   const { uid } = req.params;
-  if (!uid) throw new Error("Missing id user");
-  const isAdmin = await Admin.findById(_id);
-  if (!isAdmin) {
-    throw new Error("Not authorized to perform this action");
+
+  if (_id || !uid) throw new Error("Thiếu thông tin truyền lên");
+
+  const admin = await Admin.findById(_id);
+  if (!admin) {
+    throw new Error("Không có quyền thực hiện hành động này");
   }
-  const response = await User.findOne({ _id: uid });
+
+  const response = await User.findById(uid);
+
   return res.status(200).json({
     success: response ? true : false,
-    rs: response ? response : "User not found",
+    rs: response ? response : "Tài khoản không tồn tại",
   });
 });
 
 const getUsers = asyncHandler(async (req, res) => {
   const { _id } = req.user;
+
   if (!_id) {
-    throw new Error("Missing input");
+    throw new Error("Cần quyền truy cập");
   }
-  const isAdmin = await Admin.findById(_id);
-  if (!isAdmin) {
-    throw new Error("Not authorized to perform this action");
+
+  const admin = await Admin.findById(_id);
+  if (!admin) {
+    throw new Error("Không có quyền thực hiện hành động này");
   }
-  const response = await User.find().select("-refreshToken -password");
+
+  const response = await User.find().select("-password");
+
   return res.status(200).json({
     success: response ? true : false,
-    rs: response ? response : "User not found",
+    rs: response ? response : "Tài khoản không tồn tại",
   });
 });
 
 const updateUserByAdmin = asyncHandler(async (req, res) => {
   const { _id } = req.user;
   const { uid } = req.params;
+
   if (!_id || !uid) {
-    throw new Error("Missing input");
+    throw new Error("Thiếu dữ liệu truyền lên");
   }
-  const isAdmin = await Admin.findById(_id);
-  if (!isAdmin) {
-    throw new Error("Not authorized to perform this action");
+
+  const admin = await Admin.findById(_id);
+  if (!admin) {
+    throw new Error("Không có quyền thực hiện hành động này");
   }
+
   const { password } = req.body;
   if (password) {
     const salt = bcrypt.genSaltSync(10);
     req.body.password = await bcrypt.hash(password, salt);
   }
+
   const response = await User.findByIdAndUpdate(uid, req.body, {
     new: true,
-  }).select("-refreshToken -password");
+  });
+
   return res.status(200).json({
     success: response ? true : false,
-    mes: response ? response : "Something went wrong",
+    mes: response ? "Cập nhật thành công" : "Đã có lỗi xảy ra",
   });
 });
 

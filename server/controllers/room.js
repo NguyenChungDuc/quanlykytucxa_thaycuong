@@ -6,106 +6,109 @@ const RoomService = require("../models/roomService");
 
 const createRoom = asyncHandler(async (req, res) => {
   const { _id } = req.user;
-  const { numberRoom, max_people, roomprice } = req.body;
+  const { numberRoom, maxPeople, roomPrice } = req.body;
+
   if (!_id) {
-    throw new Error("Missing input");
+    throw new Error("Thiếu dữ liệu truyền lên");
   }
-  const isAdmin = await Admin.findById(_id);
-  if (!isAdmin) {
-    throw new Error("Not authorized to perform this action");
+
+  const admin = await Admin.findById(_id);
+  if (!admin) {
+    throw new Error("Không có quyền thực hiện hành động này");
   }
-  if (!numberRoom) throw new Error("Missing number room");
-  if (!max_people) throw new Error("Missing max people");
-  if (!roomprice) throw new Error("Missing price");
+
+  if (!numberRoom) throw new Error("Thiếu số phòng");
+  if (!maxPeople) throw new Error("Thiếu số người ở tối đa");
+  if (!roomPrice) throw new Error("Thiếu giá phòng");
+
   if (req.files?.thumb) {
-    req.body.thumb = {
-      filename: req.files?.thumb[0]?.filename,
-      path: req.files?.thumb[0]?.path,
-    };
+    req.body.thumb = req.files?.thumb[0]?.path;
   }
+
   if (req.files?.images) {
-    req.body.images = req.files?.images?.map((element) => {
-      return {
-        filename: element.filename,
-        path: element.path,
-      };
-    });
+    req.body.images = req.files?.images?.map((element) => element.path);
   }
+
   const response = await Room.create(req.body);
+
   return res.status(200).json({
     success: response ? true : false,
-    mes: response ? "Created room" : "Somethings went wrong",
+    mes: response ? "Phòng đã được tạo" : "Đã có lỗi xảy ra",
   });
 });
 
 const getOneRoom = asyncHandler(async (req, res) => {
   const { rid } = req.params;
-  const room = await Room.findById(rid);
-  const peopleInRoom = await User.find({ roomId: rid }).select(
-    "name email phone"
+
+  const room = await Room.findById(rid).populate(
+    "currentPeople",
+    "name classStudy email"
   );
-  const roomServices = await RoomService.find({ room_idRoom: rid })
-    .select("service_idService")
-    .populate("service_idService", "name price description thumb");
 
   return res.status(200).json({
     success: room ? true : false,
-    data: room ? room : "Room not found",
-    peopleInRoom,
-    roomServices,
+    data: room ? room : "Phòng không tồn tại",
   });
 });
 
-const getRooms = asyncHandler(async (req, res) => {
-  const data = await Room.find();
+const getAllRoom = asyncHandler(async (req, res) => {
+  const data = await Room.find().populate(
+    "currentPeople",
+    "name classStudy email"
+  );
+
   return res.status(200).json({
     success: data ? true : false,
-    data: data ? data : "Room not found",
+    data: data ? data : "Không có phòng nào",
   });
 });
 
 const updateRoom = asyncHandler(async (req, res) => {
   const { _id } = req.user;
   const { rid } = req.params;
-  const { max_people, roomprice, devices, description } = req.body;
+
+  const {
+    maxPeople,
+    roomPrice,
+    devices,
+    description,
+    currentPeople,
+    services,
+  } = req.body;
+
   if (!_id) {
-    throw new Error("Missing input");
+    throw new Error("Thiếu dữ liệu truyền lên");
   }
-  const isAdmin = await Admin.findById(_id);
-  if (!isAdmin) {
-    throw new Error("Not authorized to perform this action");
+  const admin = await Admin.findById(_id);
+  if (!admin) {
+    throw new Error("Không có quyền thực hiện hành động này");
   }
+
   const data = {};
-  if (max_people) data.max_people = max_people;
-  if (roomprice) data.roomprice = roomprice;
+  if (maxPeople) data.maxPeople = maxPeople;
+  if (roomPrice) data.roomPrice = roomPrice;
   if (devices) data.devices = devices;
   if (description) data.description = description;
-  if (req.files?.thumb) {
-    data.thumb = {
-      filename: req.files?.thumb[0]?.filename,
-      path: req.files?.thumb[0]?.path,
-    };
-  }
+  if (currentPeople) data.currentPeople = currentPeople;
+  if (services) data.services = services;
+  if (req.files?.thumb) data.thumb = req.files?.thumb[0]?.path;
+
   if (req.files?.images) {
-    data.images = req.files?.images?.map((element) => {
-      return {
-        filename: element.filename,
-        path: element.path,
-      };
-    });
+    data.images = req.files?.images?.map((element) => element.path);
   }
-  const response = await Room.findByIdAndUpdate({ _id: rid }, data, {
+  const response = await Room.findByIdAndUpdate(rid, data, {
     new: true,
   });
+
   return res.status(200).json({
     success: response ? true : false,
-    mes: response ? "Updated room" : "Somethings went wrong",
+    mes: response ? "Đã cập nhật thông tin" : "Đã có lỗi xảy ra",
   });
 });
 
 module.exports = {
   createRoom,
   getOneRoom,
-  getRooms,
+  getAllRoom,
   updateRoom,
 };

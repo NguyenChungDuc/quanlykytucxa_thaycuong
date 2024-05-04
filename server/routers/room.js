@@ -3,7 +3,7 @@ const ctrls = require("../controllers/room");
 const uploader = require("../config/cloudinary.config");
 const { verifyAccessToken } = require("../middlewares/verifyToken");
 
-router.get("/", ctrls.getRooms);
+router.get("/", ctrls.getAllRoom);
 router.post(
   "/manage",
   verifyAccessToken,

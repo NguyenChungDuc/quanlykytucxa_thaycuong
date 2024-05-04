@@ -161,37 +161,8 @@ const roomData = [
   },
 ];
 
-const serviceData = [
-  {
-    name: "Dịch vụ A",
-    price: 100,
-    description: "Mô tả dịch vụ A",
-  },
-  {
-    name: "Dịch vụ B",
-    price: 150,
-    description: "Mô tả dịch vụ B",
-  },
-  {
-    name: "Dịch vụ C",
-    price: 200,
-    description: "Mô tả dịch vụ C",
-  },
-  {
-    name: "Dịch vụ D",
-    price: 120,
-    description: "Mô tả dịch vụ D",
-  },
-  {
-    name: "Dịch vụ E",
-    price: 180,
-    description: "Mô tả dịch vụ E",
-  },
-];
-
 module.exports = {
   userData,
   adminData,
   roomData,
-  serviceData,
 };

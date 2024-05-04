@@ -67,26 +67,8 @@ const insertRooms = asyncHandler(async (req, res) => {
   return res.status(200).json("Done");
 });
 
-const fnInsertService = async (service) => {
-  await Service.create({
-    name: service.name,
-    price: service.price,
-    description: service.description,
-  });
-};
-
-const insertServices = asyncHandler(async (req, res) => {
-  const promises = [];
-  for (let service of serviceData) {
-    promises.push(fnInsertService(service));
-  }
-  await Promise.all(promises);
-  return res.status(200).json("Done");
-});
-
 module.exports = {
   insertUsers,
   insertAdmins,
   insertRooms,
-  insertServices,
 };
