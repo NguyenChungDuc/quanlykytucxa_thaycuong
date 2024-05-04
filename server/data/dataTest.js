@@ -100,64 +100,108 @@ const adminData = [
 
 const roomData = [
   {
-    numberRoom: 1,
-    max_people: 4,
-    roomprice: 250,
-    description: "Phòng tiện nghi với view đẹp",
+    numberRoom: 101,
+    maxPeople: 4,
+    currentPeople: [],
+    roomPrice: 80,
+    description:
+      "Phòng rộng rãi và thoải mái, lý tưởng cho nhóm người muốn tận hưởng không gian thoải mái.",
+    devices: [
+      { name: "TV", status: true },
+      { name: "Máy lạnh", status: false },
+    ],
+    services: [{ name: "Phục vụ ăn sáng", status: true, price: 10 }],
   },
   {
-    numberRoom: 2,
-    max_people: 4,
-    roomprice: 250,
-    description: "Phòng sang trọng với đầy đủ tiện nghi",
+    numberRoom: 102,
+    maxPeople: 6,
+    currentPeople: [],
+    roomPrice: 120,
+    description:
+      "Phòng sang trọng với đầy đủ tiện nghi, phù hợp cho nhóm bạn hoặc du khách muốn tận hưởng không gian thoải mái.",
+    devices: [
+      { name: "TV", status: true },
+      { name: "Máy lạnh", status: false },
+    ],
+    services: [{ name: "Phục vụ ăn sáng", status: true, price: 10 }],
   },
   {
-    numberRoom: 3,
-    max_people: 6,
-    roomprice: 300,
-    description: "Phòng thoáng đãng, yên tĩnh",
+    numberRoom: 103,
+    maxPeople: 4,
+    currentPeople: [],
+    roomPrice: 90,
+    description:
+      "Phòng tiện nghi với không gian ấm cúng và tinh tế, lựa chọn tốt cho những người muốn trải nghiệm cảm giác như ở nhà.",
+    devices: [
+      { name: "TV", status: true },
+      { name: "Máy lạnh", status: false },
+    ],
+    services: [{ name: "Phục vụ ăn sáng", status: true, price: 10 }],
   },
   {
-    numberRoom: 4,
-    max_people: 3,
-    roomprice: 280,
-    description: "Phòng hiện đại, trang bị đầy đủ",
+    numberRoom: 104,
+    maxPeople: 8,
+    currentPeople: [],
+    roomPrice: 150,
+    description:
+      "Phòng rộng lớn với không gian mở, phù hợp cho nhóm lớn muốn tận hưởng không gian thoải mái và tiện nghi.",
+    devices: [
+      { name: "TV", status: true },
+      { name: "Máy lạnh", status: false },
+    ],
+    services: [{ name: "Phục vụ ăn sáng", status: true, price: 10 }],
   },
   {
-    numberRoom: 5,
-    max_people: 5,
-    roomprice: 320,
-    description: "Phòng ấm cúng, view đẹp",
+    numberRoom: 105,
+    maxPeople: 6,
+    currentPeople: [],
+    roomPrice: 130,
+    description:
+      "Phòng được trang bị đầy đủ tiện nghi, với không gian thoải mái và sạch sẽ, giúp du khách có trải nghiệm lưu trú thoải mái và an tâm.",
+    devices: [
+      { name: "TV", status: true },
+      { name: "Máy lạnh", status: false },
+    ],
+    services: [{ name: "Phục vụ ăn sáng", status: true, price: 10 }],
   },
   {
-    numberRoom: 6,
-    max_people: 4,
-    roomprice: 270,
-    description: "Phòng lãng mạn cho cặp đôi",
+    numberRoom: 106,
+    maxPeople: 4,
+    currentPeople: [],
+    roomPrice: 100,
+    description:
+      "Phòng tinh tế với thiết kế hiện đại, đảm bảo sự thoải mái và tiện nghi cho du khách trong suốt thời gian lưu trú.",
+    devices: [
+      { name: "TV", status: true },
+      { name: "Máy lạnh", status: false },
+    ],
+    services: [{ name: "Phục vụ ăn sáng", status: true, price: 10 }],
   },
   {
-    numberRoom: 7,
-    max_people: 6,
-    roomprice: 290,
-    description: "Phòng đầy đủ dịch vụ tiện ích",
+    numberRoom: 107,
+    maxPeople: 8,
+    currentPeople: [],
+    roomPrice: 160,
+    description:
+      "Phòng lớn và rộng rãi với đầy đủ tiện nghi, phù hợp cho nhóm lớn muốn tận hưởng không gian riêng tư và thoải mái.",
+    devices: [
+      { name: "TV", status: true },
+      { name: "Máy lạnh", status: false },
+    ],
+    services: [{ name: "Phục vụ ăn sáng", status: true, price: 10 }],
   },
   {
-    numberRoom: 8,
-    max_people: 5,
-    roomprice: 260,
-    description: "Phòng thoải mái, tiện nghi",
-  },
-  {
-    numberRoom: 9,
-    max_people: 4,
-    roomprice: 240,
-    description: "Phòng tại khu vực trung tâm",
-  },
-  {
-    numberRoom: 10,
-    max_people: 3,
-    roomprice: 230,
-    description: "Phòng rộng rãi phù hợp cho gia đình",
+    numberRoom: 108,
+    maxPeople: 6,
+    currentPeople: [],
+    roomPrice: 140,
+    description:
+      "Phòng tiện nghi và thoải mái, mang đến cảm giác ấm áp như ở nhà cho du khách trong suốt thời gian lưu trú tại ký túc xá.",
+    devices: [
+      { name: "TV", status: true },
+      { name: "Máy lạnh", status: false },
+    ],
+    services: [{ name: "Phục vụ ăn sáng", status: true, price: 10 }],
   },
 ];
 

@@ -1,14 +1,8 @@
 const User = require("../models/user");
 const Admin = require("../models/admin");
 const Room = require("../models/room");
-const Service = require("../models/service");
 const asyncHandler = require("express-async-handler");
-const {
-  userData,
-  adminData,
-  roomData,
-  serviceData,
-} = require("../data/dataTest");
+const { userData, adminData, roomData } = require("../data/dataTest");
 
 const fnInsertUser = async (user) => {
   await User.create({
@@ -29,7 +23,7 @@ const insertUsers = asyncHandler(async (req, res) => {
     promises.push(fnInsertUser(user));
   }
   await Promise.all(promises);
-  return res.status(200).json("Done");
+  return res.status(200).json("Đã thêm mẫu dữ liệu tài khoản người dùng");
 });
 
 const fnInsertAdmin = async (admin) => {
@@ -46,15 +40,17 @@ const insertAdmins = asyncHandler(async (req, res) => {
     promises.push(fnInsertAdmin(admin));
   }
   await Promise.all(promises);
-  return res.status(200).json("Done");
+  return res.status(200).json("Đã thêm mẫu dữ liệu tài khoản admin");
 });
 
 const fnInsertRoom = async (room) => {
   await Room.create({
     numberRoom: room.numberRoom,
-    max_people: room.max_people,
-    roomprice: room.roomprice,
+    maxPeople: room.maxPeople,
+    roomPrice: room.roomPrice,
     description: room.description,
+    devices: room.devices,
+    services: room.services,
   });
 };
 
@@ -64,7 +60,7 @@ const insertRooms = asyncHandler(async (req, res) => {
     promises.push(fnInsertRoom(room));
   }
   await Promise.all(promises);
-  return res.status(200).json("Done");
+  return res.status(200).json("Đã thêm mẫu dữ liệu phòng");
 });
 
 module.exports = {
