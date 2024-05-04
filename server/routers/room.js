@@ -24,4 +24,6 @@ router.put(
   ctrls.updateRoom
 );
 
+router.delete("/manage/:rid", verifyAccessToken, ctrls.deleteRoom);
+
 module.exports = router;

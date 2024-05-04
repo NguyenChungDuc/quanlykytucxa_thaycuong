@@ -37,24 +37,30 @@ const contractApproval = asyncHandler(async (req, res) => {
     throw new Error("Không có quyền thực hiện hành động này");
   }
 
-  if (status === "Success") {
-    const already = await Room.findOne({ currentPeople: uid });
-    if (already) throw new Error("Người dùng đã đăng ký phòng rồi");
-    const updateRoom = await Room.findByIdAndUpdate(
-      rid,
-      { $push: { currentPeople: _id } },
-      { new: true }
-    );
-    if (!updateRoom) throw new Error("Thêm sinh viên vào phòng thất bại");
+  if (status !== "Success" || status !== "Cancel") {
+    if (status === "Success") {
+      const already = await Room.findOne({ currentPeople: uid });
+      if (already) throw new Error("Người dùng đã đăng ký phòng rồi");
+      const updateRoom = await Room.findByIdAndUpdate(
+        rid,
+        { $push: { currentPeople: uid } },
+        { new: true }
+      );
+      if (!updateRoom) throw new Error("Thêm sinh viên vào phòng thất bại");
+    }
+
+    if (status === "Cancel") {
+      const already = await Room.findOne({ currentPeople: uid });
+      if (!already) throw new Error("Người dùng chưa đăng ký phòng");
+      const updateRoom = await Room.findByIdAndUpdate(
+        rid,
+        { $pull: { currentPeople: uid } },
+        { new: true }
+      );
+      if (!updateRoom) throw new Error("Xóa người dùng khỏi phòng thất bại");
+    }
   } else {
-    const already = await Room.findOne({ currentPeople: uid });
-    if (!already) throw new Error("Người dùng chưa đăng ký phòng");
-    const updateRoom = await Room.findByIdAndUpdate(
-      rid,
-      { $pull: { currentPeople: _id } },
-      { new: true }
-    );
-    if (!updateRoom) throw new Error("Loại bỏ người dùng thất bại");
+    throw new Error("Trạng thái cập nhật không đúng");
   }
 
   const response = await Contact.findByIdAndUpdate(

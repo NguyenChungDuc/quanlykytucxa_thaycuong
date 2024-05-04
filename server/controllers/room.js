@@ -104,9 +104,30 @@ const updateRoom = asyncHandler(async (req, res) => {
   });
 });
 
+const deleteRoom = asyncHandler(async (req, res) => {
+  const { _id } = req.user;
+  const { rid } = req.params;
+
+  if (!_id) {
+    throw new Error("Thiếu dữ liệu truyền lên");
+  }
+  const admin = await Admin.findById(_id);
+  if (!admin) {
+    throw new Error("Không có quyền thực hiện hành động này");
+  }
+
+  const response = await Room.findByIdAndDelete(rid);
+
+  return res.status(200).json({
+    success: response ? true : false,
+    mes: response ? "Đã xóa phòng" : "Đã có lỗi xảy ra",
+  });
+});
+
 module.exports = {
   createRoom,
   getOneRoom,
   getAllRoom,
   updateRoom,
+  deleteRoom,
 };
