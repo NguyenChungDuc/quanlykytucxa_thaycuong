@@ -85,12 +85,12 @@ const ManagerRooms = () => {
             <Card
               className="card-room"
               key={index}
-              title={`Phòng : 0${room.numberRoom}`}
+              title={`Phòng : ${room?.numberRoom}`}
               cover={
                 <Image
                   preview={false}
                   className="roomsImage"
-                  src={room.thumb.path}
+                  src={room?.thumb}
                   height={270}
                   style={{ zIndex: -2 }}
                 />
@@ -101,8 +101,8 @@ const ManagerRooms = () => {
               actions={[
                 <Button
                   onClick={() => {
-                    showModal(room._id);
-                    console.log("room", room._id);
+                    showModal(room?._id);
+                    console.log("room", room?._id);
                   }}
                 >
                   Sửa thông tin
@@ -115,10 +115,11 @@ const ManagerRooms = () => {
                 title={
                   <>
                     <Typography.Paragraph>
-                      Giá phòng : ${room.roomprice}
+                      Giá phòng : ${room?.roomPrice}
                     </Typography.Paragraph>
                     <Typography.Paragraph>
-                      Số lượng thành viên : {room.currentPeople}/4
+                      Số lượng thành viên : {room?.currentPeople?.length}/
+                      {room?.maxPeople}
                     </Typography.Paragraph>
                   </>
                 }
@@ -157,24 +158,19 @@ const ModalRenderRooms = ({ _id }) => {
     <>
       {roomRender && (
         <Card
-          title={`Phòng : 0${roomRender.numberRoom}`}
-          cover={
-            <Image
-              preview={false}
-              src={roomRender.thumb && roomRender.thumb.path}
-              height={300}
-            />
-          }
+          title={`Phòng : ${roomRender?.numberRoom}`}
+          cover={<Image preview={false} src={roomRender?.thumb} height={300} />}
           style={{ margin: 10 }}
         >
           <Card.Meta
             title={
               <>
                 <Typography.Paragraph>
-                  Giá phòng : ${roomRender.roomprice}
+                  Giá phòng : ${roomRender?.roomPrice}
                 </Typography.Paragraph>
                 <Typography.Paragraph>
-                  Số lượng thành viên : {roomRender.currentPeople}/4
+                  Số lượng thành viên : {roomRender?.currentPeople?.length}/
+                  {roomRender?.maxPeople}
                 </Typography.Paragraph>
               </>
             }
