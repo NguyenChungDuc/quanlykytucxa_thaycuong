@@ -48,45 +48,51 @@ const contractApproval = asyncHandler(async (req, res) => {
     throw new Error("Không có quyền thực hiện hành động này");
   }
 
-  if (status !== "Success" || status !== "Cancel") {
-    if (!totalPrice) {
-      if (status === "Success") {
-        const already = await Room.findOne({ currentPeople: uid });
-        if (already) throw new Error("Người dùng đã đăng ký phòng rồi");
-        const updateRoom = await Room.findByIdAndUpdate(
-          rid,
-          { $push: { currentPeople: uid } },
-          { new: true }
-        );
-        if (!updateRoom) throw new Error("Thêm sinh viên vào phòng thất bại");
-      }
-
-      if (status === "Cancel") {
-        const already = await Room.findOne({ currentPeople: uid });
-        if (!already) throw new Error("Người dùng chưa đăng ký phòng");
-        const updateRoom = await Room.findByIdAndUpdate(
-          rid,
-          { $pull: { currentPeople: uid } },
-          { new: true }
-        );
-        if (!updateRoom) throw new Error("Xóa người dùng khỏi phòng thất bại");
-      }
-    } else {
-      throw new Error("Trạng thái cập nhật không đúng");
+  if (status === "Success" || status === "Cancel") {
+    if (status === "Success") {
+      const already = await Room.findOne({ currentPeople: uid });
+      if (already) throw new Error("Người dùng đã đăng ký phòng rồi");
+      const updateRoom = await Room.findByIdAndUpdate(
+        rid,
+        { $push: { currentPeople: uid } },
+        { new: true }
+      );
+      if (!updateRoom) throw new Error("Thêm sinh viên vào phòng thất bại");
     }
+
+    if (status === "Cancel") {
+      const already = await Room.findOne({ currentPeople: uid });
+      if (!already) throw new Error("Người dùng chưa đăng ký phòng");
+      const updateRoom = await Room.findByIdAndUpdate(
+        rid,
+        { $pull: { currentPeople: uid } },
+        { new: true }
+      );
+      if (!updateRoom) throw new Error("Xóa người dùng khỏi phòng thất bại");
+
+      const response = await Contact.findByIdAndUpdate(
+        cid,
+        { status: status, totalPrice, idAdmin: _id },
+        { new: true }
+      );
+
+      return res.status(200).json({
+        success: response ? true : false,
+        data: response
+          ? "Cập nhật trạng thái hợp đồng thành công"
+          : "Đã có lỗi xảy ra",
+      });
+    }
+  } else {
+    return res.status(400).json({
+      success: false,
+      mes: "Trạng thái cập nhật không đúng",
+    });
   }
 
-  const response = await Contact.findByIdAndUpdate(
-    cid,
-    { status: status, totalPrice, idAdmin: _id },
-    { new: true }
-  );
-
-  return res.status(200).json({
-    success: response ? true : false,
-    data: response
-      ? "Cập nhật trạng thái hợp đồng thành công"
-      : "Đã có lỗi xảy ra",
+  return res.status(500).json({
+    success: false,
+    mes: "Đã có lỗi xảy ra",
   });
 });
 

@@ -8,9 +8,14 @@ const bcrypt = require("bcrypt");
 const getCurrent = asyncHandler(async (req, res) => {
   const { _id } = req.user;
   const user = await User.findById(_id);
+  const room = await Room.findOne({ currentPeople: _id }).select(
+    "numberRoom roomPrice"
+  );
+
   return res.status(200).json({
     success: user ? true : false,
     user: user ? user : "Tài khoản không tồn tại",
+    room: room ? room : "Chưa đăng kí phòng",
   });
 });
 
