@@ -1,4 +1,3 @@
-const User = require("../models/user");
 const Contact = require("../models/contact");
 const Room = require("../models/room");
 const Admin = require("../models/admin");
@@ -16,7 +15,19 @@ const getAllContact = asyncHandler(async (req, res) => {
     throw new Error("Không có quyền thực hiện hành động này");
   }
 
-  const data = await Contact.find().populate("idAdmin", "name");
+  const data = await Contact.find()
+    .populate({
+      path: "idAdmin",
+      select: "name",
+    })
+    .populate({
+      path: "userId",
+      select: "name email phone address classStudy",
+    })
+    .populate({
+      path: "roomId",
+      select: "numberRoom maxPeople roomPrice",
+    });
 
   return res.status(200).json({
     success: data ? true : false,
@@ -27,7 +38,7 @@ const getAllContact = asyncHandler(async (req, res) => {
 const contractApproval = asyncHandler(async (req, res) => {
   const { _id } = req.user;
   const { cid } = req.params;
-  const { status, uid, rid } = req.body;
+  const { status, uid, rid, totalPrice } = req.body;
 
   if (!_id || !cid || !status || !uid || !rid)
     throw new Error("Thiếu dữ liệu truyền lên");
@@ -38,34 +49,36 @@ const contractApproval = asyncHandler(async (req, res) => {
   }
 
   if (status !== "Success" || status !== "Cancel") {
-    if (status === "Success") {
-      const already = await Room.findOne({ currentPeople: uid });
-      if (already) throw new Error("Người dùng đã đăng ký phòng rồi");
-      const updateRoom = await Room.findByIdAndUpdate(
-        rid,
-        { $push: { currentPeople: uid } },
-        { new: true }
-      );
-      if (!updateRoom) throw new Error("Thêm sinh viên vào phòng thất bại");
-    }
+    if (!totalPrice) {
+      if (status === "Success") {
+        const already = await Room.findOne({ currentPeople: uid });
+        if (already) throw new Error("Người dùng đã đăng ký phòng rồi");
+        const updateRoom = await Room.findByIdAndUpdate(
+          rid,
+          { $push: { currentPeople: uid } },
+          { new: true }
+        );
+        if (!updateRoom) throw new Error("Thêm sinh viên vào phòng thất bại");
+      }
 
-    if (status === "Cancel") {
-      const already = await Room.findOne({ currentPeople: uid });
-      if (!already) throw new Error("Người dùng chưa đăng ký phòng");
-      const updateRoom = await Room.findByIdAndUpdate(
-        rid,
-        { $pull: { currentPeople: uid } },
-        { new: true }
-      );
-      if (!updateRoom) throw new Error("Xóa người dùng khỏi phòng thất bại");
+      if (status === "Cancel") {
+        const already = await Room.findOne({ currentPeople: uid });
+        if (!already) throw new Error("Người dùng chưa đăng ký phòng");
+        const updateRoom = await Room.findByIdAndUpdate(
+          rid,
+          { $pull: { currentPeople: uid } },
+          { new: true }
+        );
+        if (!updateRoom) throw new Error("Xóa người dùng khỏi phòng thất bại");
+      }
+    } else {
+      throw new Error("Trạng thái cập nhật không đúng");
     }
-  } else {
-    throw new Error("Trạng thái cập nhật không đúng");
   }
 
   const response = await Contact.findByIdAndUpdate(
     cid,
-    { status: status, idAdmin: _id },
+    { status: status, totalPrice, idAdmin: _id },
     { new: true }
   );
 

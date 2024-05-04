@@ -23,6 +23,9 @@ var contactSchema = new mongoose.Schema({
     type: mongoose.Types.ObjectId,
     ref: "Room",
   },
+  totalPrice: {
+    type: Number,
+  },
 });
 
 //Export the model

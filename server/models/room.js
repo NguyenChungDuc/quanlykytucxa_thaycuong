@@ -33,14 +33,20 @@ var roomSchema = new mongoose.Schema(
     devices: [
       {
         name: String,
-        status: Boolean,
+        status: {
+          type: Boolean,
+          default: true,
+        },
       },
     ],
     services: [
       {
         name: String,
-        status: Boolean,
         price: Number,
+        status: {
+          type: Boolean,
+          default: true,
+        },
       },
     ],
   },
